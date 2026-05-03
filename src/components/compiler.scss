@@ -1,9 +1,13 @@
 .compiler {
     width:300px;
-    
+
     .scanner {
         width: 200px;
         margin: 0 auto;
         border: 2px solid #00ff41;
+    }
+
+    table, th, td {
+        border: 1px white solid;
     }
 }
