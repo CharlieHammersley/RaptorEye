@@ -3,38 +3,38 @@ import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
 
 
-    const initialFormState = {
-        // match info
-        matchNumber: 0,
-        position: '',
-        team: 0,
-        // auton
-        scoreAuto: 0,
-        climbLevelAuto: 0,
-        brickTimeAuto: 0,
-        // teleop/endgame
-        scoreTeleop: 0,
-        brickTimeTeleop: 0,
-        defenseTimeTeleop: 0,
-        penalties: 0,
-        climbTimeTeleop: 0,
-        climbLevelTeleop: 0,
-        // robot info
-        robotType: '',
-        driveTrain: '',
-        overBump: false,
-        underTrench: false,
-        driverSkill: 0,
-        defenseSkill: 0,
-        robotSpeed: 0,
-        stability: 0,
-        intakeConsistency: 0,
-        scoringConsistency: 0,
-        otherComments: '',
-    }
+const initialFormState = {
+    // match info
+    matchNumber: 0,
+    position: '',
+    team: 0,
+    // auton
+    scoreAuto: 0,
+    climbLevelAuto: 0,
+    brickTimeAuto: 0,
+    // teleop/endgame
+    scoreTeleop: 0,
+    brickTimeTeleop: 0,
+    defenseTimeTeleop: 0,
+    penalties: 0,
+    climbTimeTeleop: 0,
+    climbLevelTeleop: 0,
+    // robot info
+    robotType: '',
+    driveTrain: '',
+    overBump: false,
+    underTrench: false,
+    driverSkill: 0,
+    defenseSkill: 0,
+    robotSpeed: 0,
+    stability: 0,
+    intakeConsistency: 0,
+    scoringConsistency: 0,
+    otherComments: '',
+}
 
-    // basic setup for a form
-    const FormField = ({label, name, type = "text", value, onChange, options = []}) => (
+// basic setup for a form
+const FormField = ({label, name, type = "text", value, onChange, options = []}) => (
     <div className='feild-group'>
         <label>{label}</label>
         {type === "select" ? (
