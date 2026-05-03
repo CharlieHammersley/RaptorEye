@@ -174,25 +174,50 @@ export default function matchScoutingForm() {
                 <h1>Compiled Data</h1>
                 <p>Matches Scouted: {scoutedData.length}</p>
 
-                <pre>
-                    DEBUG DATA: {JSON.stringify({ n: scouterName, e: eventID, m: scoutedData })}
-                </pre>
-
                 <div className='qr-code-gallery'>
-                    {scoutedData.map((match, index) => (
-                    <div key={match.ts} className="qr-item">
-                        <h3>Match #{match.matchNumber} - Team {match.team}</h3>
-                        <QRCodeCanvas 
-                            value={JSON.stringify({
-                                n: scouterName,
-                                e: eventID,
-                                ...match
+                    {scoutedData.map((match) => (
+                        <div key={match.ts} className="qr-item">
+                            <h3>Match #{match.matchNumber} - Team {match.team}</h3>
+                        
+                            <QRCodeCanvas 
+                                value={JSON.stringify({
+                                    n: scouterName,
+                                    e: eventID,
+                                    m: match.matchNumber,
+                                    p: match.position,
+                                    t: match.team,
+                                    // Auton
+                                    sa: match.scoreAuto,
+                                    cla: match.climbLevelAuto,
+                                    bta: match.brickTimeAuto,
+                                    // Teleop
+                                    st: match.scoreTeleop,
+                                    btt: match.brickTimeTeleop,
+                                    dtt: match.defenseTimeTeleop,
+                                    pn: match.penalties,
+                                    // Endgame
+                                    ctt: match.climbTimeTeleop,
+                                    clt: match.climbLevelTeleop,
+                                    // Robot Info
+                                    rt: match.robotType,
+                                    dt: match.driveTrain,
+                                    ob: match.overBump ? 1 : 0,
+                                    ut: match.underTrench ? 1 : 0,
+                                    // Skills/Comments
+                                    ds: match.driverSkill,
+                                    df: match.defenseSkill,
+                                    rs: match.robotSpeed,
+                                    sy: match.stability,
+                                    ic: match.intakeConsistency,
+                                    sc: match.scoringConsistency,
+                                    c: match.otherComments,
+                                    ts: match.ts
                                 })} 
-                            size={250} 
-                            level="M"
-                        />
-                        <p>ID: {match.ts}</p>
-                    </div>
+                                size={250} 
+                                level="M"
+                            />
+                            <p>ID: {match.ts}</p>
+                        </div>
                     ))}
                 </div>
                 
