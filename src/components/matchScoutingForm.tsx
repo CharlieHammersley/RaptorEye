@@ -2,74 +2,87 @@ import React, { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
 
-export default function matchScoutingForm() {
-    const updateScoreAuto = (val: number) => setScoreAuto(prev => Math.max(0, prev + val));
-    const updateScoreTeleop = (val: number) => setScoreTeleop(prev => Math.max(0, prev + val));
+
+    const initialFormState = {
+        // match info
+        matchNumber: 0,
+        position: '',
+        team: 0,
+        // auton
+        scoreAuto: 0,
+        climbLevelAuto: 0,
+        brickTimeAuto: 0,
+        // teleop/endgame
+        scoreTeleop: 0,
+        brickTimeTeleop: 0,
+        defenseTimeTeleop: 0,
+        penalties: 0,
+        climbTimeTeleop: 0,
+        climbLevelTeleop: 0,
+        // robot info
+        robotType: '',
+        driveTrain: '',
+        overBump: false,
+        underTrench: false,
+        driverSkill: 0,
+        defenseSkill: 0,
+        robotSpeed: 0,
+        stability: 0,
+        intakeConsistency: 0,
+        scoringConsistency: 0,
+        otherComments: '',
+    }
+
+    // basic setup for a form
+    const FormField = ({label, name, type = "text", value, onChange, options = []}) => (
+    <div className='feild-group'>
+        <label>{label}</label>
+        {type === "select" ? (
+            <select name={name} value={value} onChange={onChange}>
+                <option value=''>Select...</option>
+                {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+        ) : (
+            <input 
+                name={name} 
+                type={type} 
+                checked={type === 'checkbox' ? !!value : undefined} 
+                value={type !== 'checkbox' ? value : undefined} 
+                onChange={onChange} 
+            />
+        )}
+    </div>
+);
     
+export default function matchScoutingForm() {
     // saving data
     const [scoutedData, setScoutedData] = useState<any[]>([]); // all matches compiled
     const saveMatch = () => {
         const newMatch = {
-            t: team,
-            m: matchNumber,
-            tp: teamPosition,
-            sa: scoreAuto,
-            cla: climbLevelAuto,
-            bta: brickTimeAuto,
-            st: scoreTeleop,
-            clt: climbLevelTeleop,
-            ctt: climbTimeTeleop,
-            btt: brickTimeTeleop,
-            dtt: defenseTimeTeleop,
-            p: penalties,
-            ts: Date.now()
+           ... formData,
+           ts: Date.now()
         };
         setScoutedData([...scoutedData, newMatch]);
-        //setTeam(''); // reset match specific variables
-        //setScore(0);
-        //alert("match saved");
+        setFormData(initialFormState); // resets all fields
+
+        alert(`Match #${newMatch.matchNumber} saved`);
     };
 
-    const [step, setStep] = useState('opener');
-    
-    //prelim info
+    // prelim info
     const [scouterName, setScouterName] = useState('');
     const [eventID, setEventID] = useState('');
+
+    const [step, setStep] = useState('opener');
+
+    const [formData, setFormData] = useState(initialFormState);
     
-    //per match data
-    const [matchNumber, setMatch] = useState(0);
-    const [teamPosition, setPosition] = useState('');
-    const [team, setTeam] = useState('');
-
-    // Auton
-    const [scoreAuto, setScoreAuto] = useState(0);
-    const [climbLevelAuto, setClimbLevelAuto] = useState(0);
-    const [brickTimeAuto, setBrickTimeAuto] = useState(0);
-    //const [allianceScoreAuto, setAllianceScoreAuto] = useState(0);
-
-    // Teleop & Endgame
-    const [scoreTeleop, setScoreTeleop] = useState(0);
-    const [brickTimeTeleop, setBrickTimeTeleop] = useState(0);
-    const [defenseTimeTeleop, setDefenseTimeTeleop] = useState(0);
-    const [penalties, setPenalties] = useState(0);
-    const [climbTimeTeleop, setClimbTimeTeleop] = useState(0);
-    const [climbLevelTeleop, setClimbLevelTeleop] = useState(0);
-
-    // Robot Info
-    const [robotType, setRobotType] = useState('');
-    const [driveTrain, setDriveTrain] = useState('');
-    const [overBump, setOverBump] = useState(Boolean);
-    const [underTrench, setUnderTrench] = useState(Boolean);
-
-    // Comments
-    const [driverSkill, setDriverSkill] = useState(0);
-    const [defenseSkill, setDefenseSkill] = useState(0);
-    const [robotSpeed, setRobotSpeed] = useState(0);
-    const [stability, setStability] = useState(0);
-    const [intakeConsistency, setIntakeConsistency] = useState(0);
-    const [scoringConsistency, setScoringConsistency] = useState(0);
-    const [otherComments, setOtherComments] = useState('');
-
+    const handleChange = (e) => {
+        const {name, value, type, checked} = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : (type === 'number' ? Number(value) : value)
+        }));
+    };
 
     if(step == 'opener') {
         return (
@@ -95,69 +108,56 @@ export default function matchScoutingForm() {
                     <hr />
                     
                     <h2>Match Information</h2>
-                        <p>Match Number</p> <input type="number" value={matchNumber} onChange={(e) => setMatch(e.target.valueAsNumber)} required />
-                        <p>Team Position</p> <select value={teamPosition} onChange={(e) => setPosition(e.target.value)} required>
-                            <option value="">Select Team Position</option>
-                            <option value={"Red 1"}>Red 1</option>
-                            <option value={"Red 2"}>Red 2</option>
-                            <option value={"Red 3"}>Red 3</option>
-                            <option value={"Blue 1"}>Blue 1</option>
-                            <option value={"Blue 2"}>Blue 2</option>
-                            <option value={"Blue 3"}>Blue 3</option>
-                        </select>
-
-                        <p>Team Number</p> <input type="number" value={team} onChange={(e) => setTeam(e.target.value)} required />
+                        <FormField label="Match Number" name="matchNumber" type="number" value={formData.matchNumber} onChange={handleChange} />
+                        <FormField label="Team Number" name="team" type="number" value={formData.team} onChange={handleChange} />
+                        <FormField label="Team Position" name="position" type="select" 
+                            options={["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"]} 
+                            value={formData.teamPosition} onChange={handleChange}/>
                     <br />
 
                     <h2>Auton</h2>
-                        <p>Individual Auton Score: <span>{scoreAuto}</span></p>
-                            <button onClick={() => updateScoreAuto(-1)}>-</button>
-                            <button onClick={() => updateScoreAuto(1)}>+</button>
-                        <p>Climb Level</p> <input type="number" value={climbLevelAuto} onChange={(e) => setClimbLevelAuto(e.target.valueAsNumber)} required />
-                        <p>Brick Time</p> <input type="number" value={brickTimeAuto} onChange={(e) => setBrickTimeAuto(e.target.valueAsNumber)} required />
+                        <p>Individual Auton Score: <span>{formData.scoreAuto}</span></p>
+                            <button onClick={() => setFormData(p => ({...p, scoreAuto: Math.max(0, p.scoreAuto - 1)}))}>-</button>
+                            <button onClick={() => setFormData(p => ({...p, scoreAuto: p.scoreAuto + 1}))}>+</button>
+                        <FormField label="Climb Level" name="climbLevelAuto" type="number" value={formData.climbLevelAuto} onChange={handleChange} />
+                        <FormField label="Brick Time" name="brickTimeAuto" type="number" value={formData.brickTimeAuto} onChange={handleChange} />
                     <br />
 
                     <h2>Teleop</h2>
-                        <p>Individual Teleop Score: <span>{scoreTeleop}</span></p>
-                            <button onClick={() => updateScoreTeleop(-1)}>-</button>
-                            <button onClick={() => updateScoreTeleop(1)}>+</button>
-                        <p>Brick Time</p> <input type="number" value={brickTimeTeleop} onChange={(e) => setBrickTimeTeleop(e.target.valueAsNumber)} required />
-                        <p>Defense Time</p> <input type="number" value={defenseTimeTeleop} onChange={(e) => setDefenseTimeTeleop(e.target.valueAsNumber)} required />
-                        <p>Penalties</p> <input type="number" value={penalties} onChange={(e) => setPenalties(e.target.valueAsNumber)} required />
+                        <p>Individual Teleop Score: <span>{formData.scoreTeleop}</span></p>
+                            <button onClick={() => setFormData(p => ({...p, scoreTeleop: Math.max(0, p.scoreTeleop - 1)}))}>-</button>
+                            <button onClick={() => setFormData(p => ({...p, scoreTeleop: p.scoreTeleop + 1}))}>+</button>
+                        <FormField label="Brick Time" name="brickTimeTeleop" type="number" value={formData.brickTimeTeleop} onChange={handleChange} />
+                        <FormField label="Defense Time" name="defenseTimeTeleop" type="number" value={formData.defenseTimeTeleop} onChange={handleChange} />
+                        <FormField label="Penalties" name="penalties" type="number" value={formData.penalties} onChange={handleChange} />
                     <br />
 
                     <h2>Endgame</h2>
-                        <p>Climb Level</p> <input type="number" value={climbLevelTeleop} onChange={(e) => setClimbLevelTeleop(e.target.valueAsNumber)} required />
-                        <p>Climb Time</p> <input type="number" value={climbTimeTeleop} onChange={(e) => setClimbTimeTeleop(e.target.valueAsNumber)} required />
+                        <FormField label="Climb Level" name="climbLevelTeleop" type="number" value={formData.climbLevelTeleop} onChange={handleChange} />
+                        <FormField label="Climb Time" name="climbTimeTeleop" type="number" value={formData.climbTimeTeleop} onChange={handleChange} />
                     <br />
 
                     <h2>Robot Information</h2>
-                        <p>Robot Type</p> <select value={robotType} onChange={(e) => setRobotType(e.target.value)} required>
-                            <option value="">Select Robot Type</option>
-                            <option value={"Dumper"}>Dumper</option>
-                            <option value={"Turret"}>Turret</option>
-                            <option value={"Two-Turret"}>Two-Turret</option>
-                            <option value={"Single Lane"}>Single Lane</option>
-                            <option value={"Multi-Lane"}>Multi-Lane</option>
-                        </select>
-                        <p>Drive Train</p> <select value={driveTrain} onChange={(e) => setDriveTrain(e.target.value)} required>
-                            <option value="">Select Drivetrain</option>
-                            <option value={"Swerve"}>Swerve</option>
-                            <option value={"Tank"}>Tank</option>
-                            <option value={"Other"}>Other</option>
-                        </select>
-                        <p>Over Bump</p> <input type="checkbox" checked={overBump} onChange={(e) => setOverBump(e.target.checked)} />
-                        <p>Under Trench</p> <input type="checkbox" checked={underTrench} onChange={(e) => setUnderTrench(e.target.checked)} />
+                        <FormField label="Robot Type" name="robotType" type="select" 
+                            options={["Dumper", "Turret", "Two-Turret", "Single Lane", "Multi-Lane"]} 
+                            value={formData.robotType} onChange={handleChange} />
+                        
+                        <FormField label="Drive Train" name="driveTrain" type="select" 
+                            options={["Swerve", "Tank", "Other", "Single Lane", "Multi-Lane"]} 
+                            value={formData.driveTrain} onChange={handleChange} />
+
+                        <FormField label="Over Bump" name="overBump" type="checkbox" value={formData.overBump} onChange={handleChange} />
+                        <FormField label="Under Trench" name="underTrench" type="checkbox" value={formData.underTrench} onChange={handleChange} />
                     <br />
 
                     <h2>Comments</h2>
-                        <p>Driver Skill</p> <input type="number" min="0" max="10" value={driverSkill} onChange={(e) => setDriverSkill(e.target.valueAsNumber)} required />
-                        <p>Defense Skill</p> <input type="number" min="0" max="10" value={defenseSkill} onChange={(e) => setDefenseSkill(e.target.valueAsNumber)} required />
-                        <p>Robot Speed</p> <input type="number" min="0" max="10" value={robotSpeed} onChange={(e) => setRobotSpeed(e.target.valueAsNumber)} required />
-                        <p>Robot Stability</p> <input type="number" min="0" max="10" value={stability} onChange={(e) => setStability(e.target.valueAsNumber)} required />
-                        <p>Intake Consistency</p> <input type="number" min="0" max="10" value={intakeConsistency} onChange={(e) => setIntakeConsistency(e.target.valueAsNumber)} required />
-                        <p>Scoring Consistency</p> <input type="number" min="0" max="10" value={scoringConsistency} onChange={(e) => setScoringConsistency(e.target.valueAsNumber)} required />
-                        <p>Additional Comments</p> <input type="string" value={otherComments} onChange={(e) => setOtherComments(e.target.value)} required />
+                        <FormField label="Driver Skill" name="driverSkill" type="number" value={formData.driverSkill} onChange={handleChange} />
+                        <FormField label="Defense Skill" name="defenseSkill" type="number" value={formData.defenseSkill} onChange={handleChange} />
+                        <FormField label="Robot Speed" name="robotSpeed" type="number" value={formData.robotSpeed} onChange={handleChange} />
+                        <FormField label="Robot Stability" name="stability" type="number" value={formData.stability} onChange={handleChange} />
+                        <FormField label="Intake Consistency" name="intakeConsistency" type="number" value={formData.intakeConsistency} onChange={handleChange} />
+                        <FormField label="Scoring Consistency" name="scoringConsistency" type="number" value={formData.scoringConsistency} onChange={handleChange} />
+                        <FormField label="Additional Comments" name="otherComments" type="string" value={formData.otherComments} onChange={handleChange} />
                     <br />
 
                     <button onClick={saveMatch}>Save Match</button>
@@ -181,7 +181,7 @@ export default function matchScoutingForm() {
                 <div className='qr-code-gallery'>
                     {scoutedData.map((match, index) => (
                     <div key={match.ts} className="qr-item">
-                        <h3>Match #{match.m} - Team {match.t}</h3>
+                        <h3>Match #{match.matchNumber} - Team {match.team}</h3>
                         <QRCodeCanvas 
                             value={JSON.stringify({
                                 n: scouterName,

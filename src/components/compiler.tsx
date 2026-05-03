@@ -74,19 +74,6 @@ export default function BarcodeCompiler() {
                             <td>{m.p}</td>
                             <td>{m.ts}</td>
                         </tr> 
-                        /*t: team,
-                            m: matchNumber,
-                            tp: teamPosition,
-                            sa: scoreAuto,
-                            cla: climbLevelAuto,
-                            bta: brickTimeAuto,
-                            st: scoreTeleop,
-                            clt: climbLevelTeleop,
-                            ctt: climbTimeTeleop,
-                            btt: brickTimeTeleop,
-                            dtt: defenseTimeTeleop,
-                            p: penalties,
-                            ts: Date.now() */
                     ))}
                 </tbody>
             </table>
