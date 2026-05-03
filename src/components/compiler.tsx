@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './compiler.scss';
 
 export default function BarcodeCompiler() {
     const [scannedMatches, setScannedMatches] = useState<any[]>([]);
@@ -19,7 +20,6 @@ export default function BarcodeCompiler() {
                 // duplicate check
                 if (!scannedMatches.some(m => m.ts === data.ts)) {
                     setScannedMatches([...scannedMatches, data]);
-                    console.log("captured match");
                 } else {
                     alert("duplicate match");
                 }
@@ -77,6 +77,20 @@ export default function BarcodeCompiler() {
                             <td>{m.ds}</td><td>{m.df}</td><td>{m.rs}</td><td>{m.sy}</td><td>{m.ic}</td><td>{m.sc}</td>
                             <td>{m.c}</td>
                         </tr> 
+                        /*
+                            t: team,
+                            m: matchNumber,
+                            tp: teamPosition,
+                            sa: scoreAuto,
+                            cla: climbLevelAuto,
+                            bta: brickTimeAuto,
+                            st: scoreTeleop,
+                            clt: climbLevelTeleop,
+                            ctt: climbTimeTeleop,
+                            btt: brickTimeTeleop,
+                            dtt: defenseTimeTeleop,
+                            p: penalties,
+                            ts: Date.now() */
                     ))}
                 </tbody>
             </table>
