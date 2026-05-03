@@ -3,19 +3,25 @@ import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
 
 export default function matchScoutForm() {
-    const updateScore = (val: number) => setScore(prev => Math.max(0, prev + val));
-    const [step, setStep] = useState('opener');
-    const [scouterName, setScouterName] = useState('');
-    const [eventID, setEventID] = useState('');
-    const [team, setTeam] = useState('');
-    const [score, setScore] = useState(0);
-
-    const [scoutedData, setScoutedData] = useState<any[]>([]);
-
+    const updateScoreAuto = (val: number) => setScoreAuto(prev => Math.max(0, prev + val));
+    const updateScoreTeleop = (val: number) => setScoreTeleop(prev => Math.max(0, prev + val));
+    
+    // saving data
+    const [scoutedData, setScoutedData] = useState<any[]>([]); // all matches compiled
     const saveMatch = () => {
         const newMatch = {
             t: team,
-            s: score,
+            m: matchNumber,
+            tp: teamPosition,
+            sa: scoreAuto,
+            cla: climbLevelAuto,
+            bta: brickTimeAuto,
+            st: scoreTeleop,
+            clt: climbLevelTeleop,
+            ctt: climbTimeTeleop,
+            btt: brickTimeTeleop,
+            dtt: defenseTimeTeleop,
+            p: penalties,
             ts: Date.now()
         };
         setScoutedData([...scoutedData, newMatch]);
@@ -24,11 +30,37 @@ export default function matchScoutForm() {
         //alert("match saved");
     };
 
+    const [step, setStep] = useState('opener');
+    
+    //prelim info
+    const [scouterName, setScouterName] = useState('');
+    const [eventID, setEventID] = useState('');
+    
+    //per match data
+    const [matchNumber, setMatch] = useState(0);
+    const [teamPosition, setPosition] = useState('');
+    const [team, setTeam] = useState('');
+
+    // Auton
+    const [scoreAuto, setScoreAuto] = useState(0);
+    const [climbLevelAuto, setClimbLevelAuto] = useState(0);
+    const [brickTimeAuto, setBrickTimeAuto] = useState(0);
+    //const [allianceScoreAuto, setAllianceScoreAuto] = useState(0);
+
+    // Teleop & Endgame
+    const [scoreTeleop, setScoreTeleop] = useState(0);
+    const [brickTimeTeleop, setBrickTimeTeleop] = useState(0);
+    const [defenseTimeTeleop, setDefenseTimeTeleop] = useState(0);
+    const [penalties, setPenalties] = useState(0);
+    const [climbTimeTeleop, setClimbTimeTeleop] = useState(0);
+    const [climbLevelTeleop, setClimbLevelTeleop] = useState(0);
+
+    // ADD ROBOT INFORMATION TO FORM
 
     if(step == 'opener') {
         return (
             <div className='opener'>
-                <h1>Raptor Eye</h1>
+                <h1>The Eye</h1>
                 <p>Scouter Name</p>
                 <input value={scouterName} onChange={(e) => setScouterName(e.target.value)} />
                 <p>Event ID</p>
@@ -43,19 +75,39 @@ export default function matchScoutForm() {
         return (
             <div className="form">
                 <h1>Match Scouting</h1>
-                    <h3>Scouting: {eventID}</h3>
-                    <p>{scouterName}</p>
-                    <p>Matches Scouted: {scoutedData.length}</p>
+                    <h3>Scouting Event: {eventID}</h3>
+                        <p>{scouterName}</p>
+                        <p>Matches Scouted: {scoutedData.length}</p>
                     <hr />
-
-                    <p>Team Number</p>
-                        <input type="number" value={team} onChange={(e) => setTeam(e.target.value)} required />
+                    
+                    <h2>Match Information</h2>
+                        <p>Match Number</p> <input type="number" value={matchNumber} onChange={(e) => setMatch(e.target.valueAsNumber)} required />
+                        <p>Team Position</p> <input value={teamPosition} onChange={(e) => setPosition(e.target.value)} />
+                        <p>Team Number</p> <input type="number" value={team} onChange={(e) => setTeam(e.target.value)} required />
                     <br />
 
-                    <p>Individual Score: <span>{score}</span></p>
-                        <button onClick={() => updateScore(-1)}>-</button>
-                        <button onClick={() => updateScore(1)}>+</button>
+                    <h2>Auton</h2>
+                        <p>Individual Auton Score: <span>{scoreAuto}</span></p>
+                            <button onClick={() => updateScoreAuto(-1)}>-</button>
+                            <button onClick={() => updateScoreAuto(1)}>+</button>
+                        <p>Climb Level</p> <input type="number" value={climbLevelAuto} onChange={(e) => setClimbLevelAuto(e.target.valueAsNumber)} required />
+                        <p>Brick Time</p> <input type="number" value={brickTimeAuto} onChange={(e) => setBrickTimeAuto(e.target.valueAsNumber)} required />
                     <br />
+
+                    <h2>Teleop</h2>
+                        <p>Individual Teleop Score: <span>{scoreTeleop}</span></p>
+                            <button onClick={() => updateScoreTeleop(-1)}>-</button>
+                            <button onClick={() => updateScoreTeleop(1)}>+</button>
+                        <p>Brick Time</p> <input type="number" value={brickTimeTeleop} onChange={(e) => setBrickTimeTeleop(e.target.valueAsNumber)} required />
+                        <p>Defense Time</p> <input type="number" value={defenseTimeTeleop} onChange={(e) => setDefenseTimeTeleop(e.target.valueAsNumber)} required />
+                        <p>Penalties</p> <input type="number" value={penalties} onChange={(e) => setPenalties(e.target.valueAsNumber)} required />
+                    <br />
+
+                    <h2>Endgame</h2>
+                        <p>Climb Level</p> <input type="number" value={climbLevelTeleop} onChange={(e) => setClimbLevelTeleop(e.target.valueAsNumber)} required />
+                        <p>Climb Time</p> <input type="number" value={climbTimeTeleop} onChange={(e) => setClimbTimeTeleop(e.target.valueAsNumber)} required />
+                    <br />
+
                     <button onClick={saveMatch}>Save Match</button>
                     <br />
                     <button onClick={() => setStep('qr-codes')}>Compile Data</button>
@@ -68,13 +120,16 @@ export default function matchScoutForm() {
         return (
             <div className='qr-codes'>
                 <h1>Compiled Data</h1>
+                <pre style={{fontSize: '10px', color: 'lime'}}>
+                    DEBUG DATA: {JSON.stringify({ n: scouterName, e: eventID, m: scoutedData })}
+                </pre>
                 <p>Matches Scouted: {scoutedData.length}</p>
                 <div className='qrbox'>
                     <QRCodeCanvas value={JSON.stringify({
                         n: scouterName,
                         e: eventID,
                         m: scoutedData
-                    })} size={300} />
+                    })} size={300} level={"L"}/>
                 </div>
                 <br />
                 <button onClick={() => setStep('form')}>Back to Scouting</button>
