@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
 
-export default function matchScoutForm() {
+export default function matchScoutingForm() {
     const updateScoreAuto = (val: number) => setScoreAuto(prev => Math.max(0, prev + val));
     const updateScoreTeleop = (val: number) => setScoreTeleop(prev => Math.max(0, prev + val));
     
@@ -120,19 +120,35 @@ export default function matchScoutForm() {
         return (
             <div className='qr-codes'>
                 <h1>Compiled Data</h1>
-                <pre style={{fontSize: '10px', color: 'lime'}}>
+                <p>Matches Scouted: {scoutedData.length}</p>
+
+                <pre>
                     DEBUG DATA: {JSON.stringify({ n: scouterName, e: eventID, m: scoutedData })}
                 </pre>
-                <p>Matches Scouted: {scoutedData.length}</p>
-                <div className='qrbox'>
-                    <QRCodeCanvas value={JSON.stringify({
-                        n: scouterName,
-                        e: eventID,
-                        m: scoutedData
-                    })} size={300} level={"L"}/>
+
+                <div className='qr-code-gallery'>
+                    {scoutedData.map((match, index) => (
+                    <div key={match.ts} className="qr-item">
+                        <h3>Match #{match.m} - Team {match.t}</h3>
+                        <QRCodeCanvas 
+                            value={JSON.stringify({
+                                n: scouterName,
+                                e: eventID,
+                                ...match
+                                })} 
+                            size={250} 
+                            level="M"
+                        />
+                        <p>ID: {match.ts}</p>
+                    </div>
+                    ))}
                 </div>
+                
                 <br />
-                <button onClick={() => setStep('form')}>Back to Scouting</button>
+                <div className="controls">
+                    <button onClick={() => setStep('form')}>Back to Scouting</button>
+                    <button className="clearData" onClick={() => { if(window.confirm("Clear all?")) setScoutedData([]); }}> Wipe Data</button>
+                </div>
             </div>
         );
     }

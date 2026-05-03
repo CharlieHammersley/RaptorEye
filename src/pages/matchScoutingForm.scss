@@ -15,4 +15,26 @@ $raptors-darkGreen: #162116;
         padding: 10px;
         display: inline-block;
     }
+
+    .qr-code-gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        align-items: center;
+
+        .qr-item {
+            background:white; 
+            padding: 20px;
+            border-radius: 10px; 
+            color: black;
+        }
+
+        .controls {
+            position: sticky;
+            bottom: 20px;
+            .clearData {
+                color: red;
+            }
+        }
+    }
 }
