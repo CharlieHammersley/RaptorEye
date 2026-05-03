@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './compiler.scss';
 
 export default function BarcodeCompiler() {
     const [scannedMatches, setScannedMatches] = useState<any[]>([]);
@@ -19,7 +20,6 @@ export default function BarcodeCompiler() {
                 // duplicate check
                 if (!scannedMatches.some(m => m.ts === data.ts)) {
                     setScannedMatches([...scannedMatches, data]);
-                    console.log("captured match");
                 } else {
                     alert("duplicate match");
                 }
@@ -45,16 +45,25 @@ export default function BarcodeCompiler() {
                     value={rawInput}
                     onChange={(e) => setRawInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Scan data goes here"
-                />
+                    placeholder="Scan data goes here"/>
             </div>
 
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Team</th>
-                        <th>Match</th>
-                        <th></th>
+                        <td>Team Number</td>
+                        <td>Match Number</td>
+                        <td>Team Position</td>
+                        <td>Auto Score</td>
+                        <td>Auto Climb Level</td>
+                        <td>Auto Brick Time</td>
+                        <td>Teleop Score</td>
+                        <td>Teleop Climb Level</td>
+                        <td>Teleop Climb Time</td>
+                        <td>Teleop Brick Time</td>
+                        <td>Defense Time</td>
+                        <td>Penalties</td>
+                        <td>Time Stamp</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,6 +83,20 @@ export default function BarcodeCompiler() {
                             <td>{m.p}</td>
                             <td>{m.ts}</td>
                         </tr> 
+                        /*
+                            t: team,
+                            m: matchNumber,
+                            tp: teamPosition,
+                            sa: scoreAuto,
+                            cla: climbLevelAuto,
+                            bta: brickTimeAuto,
+                            st: scoreTeleop,
+                            clt: climbLevelTeleop,
+                            ctt: climbTimeTeleop,
+                            btt: brickTimeTeleop,
+                            dtt: defenseTimeTeleop,
+                            p: penalties,
+                            ts: Date.now() */
                     ))}
                 </tbody>
             </table>
