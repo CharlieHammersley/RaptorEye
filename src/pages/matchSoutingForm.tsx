@@ -10,7 +10,7 @@ export default function matchScoutForm() {
     const [team, setTeam] = useState('');
     const [score, setScore] = useState(0);
 
-    const [allMatches, setAllMatches] = useState<any[]>([]);
+    const [scoutedData, setScoutedData] = useState<any[]>([]);
 
     const saveMatch = () => {
         const newMatch = {
@@ -18,10 +18,10 @@ export default function matchScoutForm() {
             s: score,
             ts: Date.now()
         };
-        setAllMatches([...allMatches, newMatch]);
-        setTeam(''); // reset match specific variables
-        setScore(0);
-        alert("match saved");
+        setScoutedData([...scoutedData, newMatch]);
+        //setTeam(''); // reset match specific variables
+        //setScore(0);
+        //alert("match saved");
     };
 
 
@@ -45,6 +45,7 @@ export default function matchScoutForm() {
                 <h1>Match Scouting</h1>
                     <h3>Scouting: {eventID}</h3>
                     <p>{scouterName}</p>
+                    <p>Matches Scouted: {scoutedData.length}</p>
                     <hr />
 
                     <p>Team Number</p>
@@ -65,7 +66,19 @@ export default function matchScoutForm() {
 
     if(step == 'qr-codes') {
         return (
-            <div className='qr-codes'></div>
+            <div className='qr-codes'>
+                <h1>Compiled Data</h1>
+                <p>Matches Scouted: {scoutedData.length}</p>
+                <div className='qrbox'>
+                    <QRCodeCanvas value={JSON.stringify({
+                        n: scouterName,
+                        e: eventID,
+                        m: scoutedData
+                    })} size={300} />
+                </div>
+                <br />
+                <button onClick={() => setStep('form')}>Back to Scouting</button>
+            </div>
         );
     }
 }
