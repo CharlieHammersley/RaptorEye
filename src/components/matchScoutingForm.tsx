@@ -112,7 +112,7 @@ export default function matchScoutingForm() {
                         <FormField label="Team Number" name="team" type="number" value={formData.team} onChange={handleChange} />
                         <FormField label="Team Position" name="position" type="select" 
                             options={["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"]} 
-                            value={formData.teamPosition} onChange={handleChange}/>
+                            value={formData.position} onChange={handleChange}/>
                     <br />
 
                     <h2>Auton</h2>
