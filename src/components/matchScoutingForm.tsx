@@ -1,41 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
+import { getEvents } from '../api.ts';
+import type { FiMEvent } from '../api.ts';
 
 
-    const initialFormState = {
-        // match info
-        matchNumber: 0,
-        position: '',
-        team: 0,
-        // auton
-        scoreAuto: 0,
-        climbLevelAuto: 0,
-        brickTimeAuto: 0,
-        // teleop/endgame
-        scoreTeleop: 0,
-        brickTimeTeleop: 0,
-        defenseTimeTeleop: 0,
-        penalties: 0,
-        climbTimeTeleop: 0,
-        climbLevelTeleop: 0,
-        // robot info
-        robotType: '',
-        driveTrain: '',
-        overBump: false,
-        underTrench: false,
-        driverSkill: 0,
-        defenseSkill: 0,
-        robotSpeed: 0,
-        stability: 0,
-        intakeConsistency: 0,
-        scoringConsistency: 0,
-        otherComments: '',
-    }
+const initialFormState = {
+    // match info
+    matchNumber: 0,
+    position: '',
+    team: 0,
+    // auton
+    scoreAuto: 0,
+    climbLevelAuto: 0,
+    brickTimeAuto: 0,
+    // teleop/endgame
+    scoreTeleop: 0,
+    brickTimeTeleop: 0,
+    defenseTimeTeleop: 0,
+    penalties: 0,
+    climbTimeTeleop: 0,
+    climbLevelTeleop: 0,
+    // robot info
+    robotType: '',
+    driveTrain: '',
+    overBump: false,
+    underTrench: false,
+    driverSkill: 0,
+    defenseSkill: 0,
+    robotSpeed: 0,
+    stability: 0,
+    intakeConsistency: 0,
+    scoringConsistency: 0,
+    otherComments: '',
+}
 
-    // basic setup for a form
-    const FormField = ({label, name, type = "text", value, onChange, options = []}) => (
-    <div className='feild-group'>
+// basic setup for a form
+const FormField = ({label, name, type = "text", value, onChange, options = []}) => (
+    <div className='field-group'>
         <label>{label}</label>
         {type === "select" ? (
             <select name={name} value={value} onChange={onChange}>
@@ -70,7 +72,13 @@ export default function matchScoutingForm() {
 
     // prelim info
     const [scouterName, setScouterName] = useState('');
-    const [eventID, setEventID] = useState('');
+    const [events, setEvents] = useState<FiMEvent[]>([]);
+    const [selectedEvent, setSelectedEvent] = useState<FiMEvent | null>(null);
+
+    useEffect(() => {
+        getEvents().then(setEvents);
+    }, []);
+
 
     const [step, setStep] = useState('opener');
 
@@ -90,8 +98,14 @@ export default function matchScoutingForm() {
                 <h1>The Eye</h1>
                 <p>Scouter Name</p>
                 <input value={scouterName} onChange={(e) => setScouterName(e.target.value)} />
-                <p>Event ID</p>
-                <input value={eventID} onChange={(e) => setEventID(e.target.value)} />
+                <br /><br />
+                <FormField label="Event " name="event" type="select"
+                    options={events.map(event => event.name)}
+                    value={selectedEvent?.name || ''}
+                    onChange={(e) => {
+                        const selected = events.find(ev => ev.name === e.target.value);
+                        setSelectedEvent(selected); // Store all the event data
+                    }}/>
                 <br />
                 <button onClick={() => setStep('form')}>Start Scouting</button>
             </div>
@@ -102,7 +116,7 @@ export default function matchScoutingForm() {
         return (
             <div className="form">
                 <h1>Match Scouting</h1>
-                    <h3>Scouting Event: {eventID}</h3>
+                    <h3>Scouting Event: {selectedEvent.key}</h3>
                         <p>{scouterName}</p>
                         <p>Matches Scouted: {scoutedData.length}</p>
                     <hr />
@@ -112,7 +126,7 @@ export default function matchScoutingForm() {
                         <FormField label="Team Number" name="team" type="number" value={formData.team} onChange={handleChange} />
                         <FormField label="Team Position" name="position" type="select" 
                             options={["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"]} 
-                            value={formData.teamPosition} onChange={handleChange}/>
+                            value={formData.position} onChange={handleChange}/>
                     <br />
 
                     <h2>Auton</h2>
@@ -182,7 +196,7 @@ export default function matchScoutingForm() {
                             <QRCodeCanvas 
                                 value={JSON.stringify({
                                     n: scouterName,
-                                    e: eventID,
+                                    e: selectedEvent.key,
                                     m: match.matchNumber,
                                     p: match.position,
                                     t: match.team,
