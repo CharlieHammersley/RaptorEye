@@ -32,6 +32,32 @@ export default function BarcodeCompiler() {
         }
     };
 
+    const exportToSheets = async () => {
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgol7B05Q28iOrOzafcxJbPeR3cvD18IYsy-AGnVRqgdVLmuRvCnmS0hXln0N9h4o/exec";
+        
+        if (scannedMatches.length === 0) {
+            alert("No matches to export!");
+            return;
+        }
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors", 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(scannedMatches),
+            });
+
+            alert("Data sent to Google Sheets");
+            // setScannedMatches([]); this will reset data after export
+        } catch (error) {
+            console.error("Export Error:", error);
+            alert("export failed");
+        }
+    };
+
     return (
         <div className="compiler">
             <h1>Barcode Compiler</h1>
@@ -51,12 +77,12 @@ export default function BarcodeCompiler() {
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Scouter</th><th>Match</th><th>Team</th><th>Pos</th>
-                        <th>S.Auto</th><th>C.Auto</th><th>B.Auto</th>
-                        <th>S.Tele</th><th>B.Tele</th><th>D.Tele</th><th>Pens</th>
-                        <th>C.Time</th><th>C.Lvl</th>
-                        <th>Type</th><th>Drive</th><th>Bump</th><th>Trnch</th>
-                        <th>D.Skill</th><th>Def</th><th>Spd</th><th>Stab</th><th>In.Con</th><th>Sc.Con</th>
+                        <th>Scouter</th><th>Match</th><th>Team</th><th>Position</th>
+                        <th>Auto Score</th><th>Auto Climb Level</th><th>Auto Brick Time</th>
+                        <th>Teleop Score</th><th>Teleop Brick Time</th><th>Teleop Defense Time</th><th>Penalties</th>
+                        <th>Climb Time</th><th>Climb Level</th>
+                        <th>Robot Type</th><th>Drivetrain</th><th>Over Bump</th><th>Under Trench</th>
+                        <th>Driver Skill</th><th>Defense Skill</th><th>Speed</th><th>Stability</th><th>Intake Consistency</th><th>Scoring Consistency</th>
                         <th>Comments</th>
                     </tr>
                 </thead>
@@ -77,23 +103,14 @@ export default function BarcodeCompiler() {
                             <td>{m.ds}</td><td>{m.df}</td><td>{m.rs}</td><td>{m.sy}</td><td>{m.ic}</td><td>{m.sc}</td>
                             <td>{m.c}</td>
                         </tr> 
-                        /*
-                            t: team,
-                            m: matchNumber,
-                            tp: teamPosition,
-                            sa: scoreAuto,
-                            cla: climbLevelAuto,
-                            bta: brickTimeAuto,
-                            st: scoreTeleop,
-                            clt: climbLevelTeleop,
-                            ctt: climbTimeTeleop,
-                            btt: brickTimeTeleop,
-                            dtt: defenseTimeTeleop,
-                            p: penalties,
-                            ts: Date.now() */
                     ))}
                 </tbody>
             </table>
+
+            <div className="controls">
+                <button onClick={exportToSheets}>Export to Google Sheets</button>
+                <button className="clearData" onClick={() => setScannedMatches([])}>Wipe Data</button>
+            </div>
         </div>
     );
 }
