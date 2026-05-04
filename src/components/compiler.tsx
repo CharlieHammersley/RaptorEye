@@ -14,7 +14,8 @@ export default function BarcodeCompiler() {
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') { // when it ends scan it sends enter
-            try {
+            handleSubmit
+            /*try {
                 const data = JSON.parse(rawInput);
                 
                 // duplicate check
@@ -28,33 +29,20 @@ export default function BarcodeCompiler() {
             } catch (err) {
                 alert("scan failed");
                 setRawInput('');
-            }
+            }*/
         }
     };
-    
-    const [targetSheetId, setTargetSheetId] = useState(''); // if blank it will use the script's default sheet
-    const [targetTabName, setTargetTabName] = useState('Sheet2');
-
-    const exportToSheets = async () => {
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4ggHcnUh3FRP7Nmh4BPxszfPuufo6_TGwg1-LRKNuqUKgY-ctFlrO7ND48-bOawW_/exec";
-
-        const packet = {
-            spreadsheetId: targetSheetId, // url id
-            targetTab: targetTabName,
-            matches: scannedMatches
-        };
-
-        try {
-            await fetch(SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify(packet),
-            });
-            alert(`data exported to https://docs.google.com/spreadsheets/d/${targetSheetId} on tab ${targetTabName}.`);
-        } catch (error) {
-            alert("Export failed");
-        }
-    };
+    const handleSubmit = (e)=>{
+        e.preventDefault()
+        const url = "https://script.google.com/macros/s/AKfycbzPngA7iQX9KTIqXBtnIU6a3-21BH_150wdnpW-NOCi1_kOT0goBrLcHcyK3jhefP0S/exec"
+        fetch(url,{
+            meathod:"POST",
+            headers:{"Content-Type": "application/x-www-form-urlencoded"},
+            body: {'Name=$(e.target.n.value)&Event=$(e.target.e.value)'}
+        }).then(res=>res.text()).then(data=>{
+            alert(data)
+        }).catch(error=>console.log(error))
+    }
 
     return (
         <div className="compiler">
