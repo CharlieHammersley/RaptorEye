@@ -14,7 +14,8 @@ export default function BarcodeCompiler() {
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') { // when it ends scan it sends enter
-            try {
+            handleSubmit
+            /*try {
                 const data = JSON.parse(rawInput);
                 
                 // duplicate check
@@ -28,9 +29,20 @@ export default function BarcodeCompiler() {
             } catch (err) {
                 alert("scan failed");
                 setRawInput('');
-            }
+            }*/
         }
     };
+    const handleSubmit = (e)=>{
+        e.preventDefault()
+        const url = "https://script.google.com/macros/s/AKfycbzPngA7iQX9KTIqXBtnIU6a3-21BH_150wdnpW-NOCi1_kOT0goBrLcHcyK3jhefP0S/exec"
+        fetch(url,{
+            meathod:"POST",
+            headers:{"Content-Type": "application/x-www-form-urlencoded"},
+            body: {'Name=$(e.target.n.value)&Event=$(e.target.e.value)'}
+        }).then(res=>res.text()).then(data=>{
+            alert(data)
+        }).catch(error=>console.log(error))
+    }
 
     return (
         <div className="compiler">
