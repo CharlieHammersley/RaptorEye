@@ -3,7 +3,6 @@ import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
 import { getEvents, type FiMEvent } from '../api.ts';
 
-
 const initialFormState = {
     // match info
     matchNumber: 0,
@@ -93,7 +92,7 @@ export default function matchScoutingForm() {
     if(step == 'opener') {
         return (
             <div className='opener'>
-                <h1>The Eye</h1>
+                <h1>RAPTORS Scouting</h1>
                 <p>Scouter Name</p>
                 <input value={scouterName} onChange={(e) => setScouterName(e.target.value)} />
                 <br /><br />

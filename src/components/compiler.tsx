@@ -14,8 +14,7 @@ export default function BarcodeCompiler() {
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') { // when it ends scan it sends enter
-            handleSubmit
-            /*try {
+            try {
                 const data = JSON.parse(rawInput);
                 
                 // duplicate check
@@ -29,20 +28,33 @@ export default function BarcodeCompiler() {
             } catch (err) {
                 alert("scan failed");
                 setRawInput('');
-            }*/
+            }
         }
     };
-    const handleSubmit = (e)=>{
-        e.preventDefault()
-        const url = "https://script.google.com/macros/s/AKfycbzPngA7iQX9KTIqXBtnIU6a3-21BH_150wdnpW-NOCi1_kOT0goBrLcHcyK3jhefP0S/exec"
-        fetch(url,{
-            meathod:"POST",
-            headers:{"Content-Type": "application/x-www-form-urlencoded"},
-            body: {'Name=$(e.target.n.value)&Event=$(e.target.e.value)'}
-        }).then(res=>res.text()).then(data=>{
-            alert(data)
-        }).catch(error=>console.log(error))
-    }
+    
+    const [targetSheetId, setTargetSheetId] = useState('1qcgFxUVsryJYm3XiiMLJtAoRHy22DsLU4IxocLuMu6Y'); // if blank it will use the script's default sheet
+    const [targetTabName, setTargetTabName] = useState('Raw Data');
+
+    const exportToSheets = async () => {
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4ggHcnUh3FRP7Nmh4BPxszfPuufo6_TGwg1-LRKNuqUKgY-ctFlrO7ND48-bOawW_/exec";
+
+        const packet = {
+            spreadsheetId: targetSheetId, // url id
+            targetTab: targetTabName,
+            matches: scannedMatches
+        };
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(packet),
+            });
+            alert(`data exported to https://docs.google.com/spreadsheets/d/${targetSheetId} on tab ${targetTabName}.`);
+        } catch (error) {
+            alert("Export failed");
+        }
+    };
 
     return (
         <div className="compiler">
@@ -85,7 +97,7 @@ export default function BarcodeCompiler() {
                             {/* Robot Info */}
                             <td>{m.rt}</td><td>{m.dt}</td>
                             <td>{m.ob === 1 ? 'Y' : 'N'}</td><td>{m.ut === 1 ? 'Y' : 'N'}</td>
-                            {/* Skills */}
+                            {/* Comments */}
                             <td>{m.ds}</td><td>{m.df}</td><td>{m.rs}</td><td>{m.sy}</td><td>{m.ic}</td><td>{m.sc}</td>
                             <td>{m.c}</td>
                         </tr> 
