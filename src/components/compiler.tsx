@@ -31,30 +31,28 @@ export default function BarcodeCompiler() {
             }
         }
     };
+    
+    const [targetSheetId, setTargetSheetId] = useState(''); // if blank it will use the script's default sheet
+    const [targetTabName, setTargetTabName] = useState('Sheet2');
 
     const exportToSheets = async () => {
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgol7B05Q28iOrOzafcxJbPeR3cvD18IYsy-AGnVRqgdVLmuRvCnmS0hXln0N9h4o/exec";
-        
-        if (scannedMatches.length === 0) {
-            alert("No matches to export!");
-            return;
-        }
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4ggHcnUh3FRP7Nmh4BPxszfPuufo6_TGwg1-LRKNuqUKgY-ctFlrO7ND48-bOawW_/exec";
+
+        const packet = {
+            spreadsheetId: targetSheetId, // url id
+            targetTab: targetTabName,
+            matches: scannedMatches
+        };
 
         try {
             await fetch(SCRIPT_URL, {
                 method: "POST",
-                mode: "no-cors", 
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(scannedMatches),
+                mode: "no-cors",
+                body: JSON.stringify(packet),
             });
-
-            alert("Data sent to Google Sheets");
-            // setScannedMatches([]); this will reset data after export
+            alert(`data exported to https://docs.google.com/spreadsheets/d/${targetSheetId} on tab ${targetTabName}.`);
         } catch (error) {
-            console.error("Export Error:", error);
-            alert("export failed");
+            alert("Export failed");
         }
     };
 
@@ -77,7 +75,7 @@ export default function BarcodeCompiler() {
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Scouter</th><th>Match</th><th>Team</th><th>Position</th>
+                        <th>Scouter</th><th>Event</th><th>Match</th><th>Team</th><th>Position</th>
                         <th>Auto Score</th><th>Auto Climb Level</th><th>Auto Brick Time</th>
                         <th>Teleop Score</th><th>Teleop Brick Time</th><th>Teleop Defense Time</th><th>Penalties</th>
                         <th>Climb Time</th><th>Climb Level</th>
@@ -89,7 +87,7 @@ export default function BarcodeCompiler() {
                 <tbody>
                     {scannedMatches.map(m => (
                         <tr key={m.ts}>
-                            <td>{m.n}</td><td>{m.m}</td><td>{m.t}</td><td>{m.p}</td>
+                            <td>{m.n}</td><td>{m.e}</td><td>{m.m}</td><td>{m.t}</td><td>{m.p}</td>
                             {/* Auton */}
                             <td>{m.sa}</td><td>{m.cla}</td><td>{m.bta}</td>
                             {/* Teleop */}
