@@ -1,61 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
-import { getEvents } from '../api.ts';
-import type { FiMEvent } from '../api.ts';
-
-const initialFormState = {
-    // match info
-    matchNumber: 0,
-    position: '',
-    team: 0,
-    // auton
-    scoreAuto: 0,
-    climbLevelAuto: 0,
-    brickTimeAuto: 0,
-    // teleop/endgame
-    scoreTeleop: 0,
-    brickTimeTeleop: 0,
-    defenseTimeTeleop: 0,
-    penalties: 0,
-    climbTimeTeleop: 0,
-    climbLevelTeleop: 0,
-    // robot info
-    robotType: '',
-    driveTrain: '',
-    overBump: false,
-    underTrench: false,
-    driverSkill: 0,
-    defenseSkill: 0,
-    robotSpeed: 0,
-    stability: 0,
-    intakeConsistency: 0,
-    scoringConsistency: 0,
-    otherComments: '',
-}
-
-// basic setup for a form
-const FormField = ({label, name, type = "text", value, onChange, options = []}) => (
-    <div className='field-group'>
-        <label>{label}</label>
-        {type === "select" ? (
-            <select name={name} value={value} onChange={onChange}>
-                <option value=''>Select...</option>
-                {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
-        ) : (
-            <input 
-                name={name} 
-                type={type} 
-                checked={type === 'checkbox' ? !!value : undefined} 
-                value={type !== 'checkbox' ? value : undefined} 
-                onChange={onChange} 
-            />
-        )}
-    </div>
-);
+import { getEvents } from '../components/api.ts';
+import type { FiMEvent } from '../components/api.ts';
+import FormField from '../components/formField.tsx';
+import { initialFormState, type MatchFormData } from '../components/matchFormState';
     
 export default function matchScoutingForm() {
+
+    const [formData, setFormData] = useState<MatchFormData>(initialFormState);
     // saving data
     const [scoutedData, setScoutedData] = useState<any[]>([]); // all matches compiled
     const saveMatch = () => {
@@ -80,8 +33,6 @@ export default function matchScoutingForm() {
 
 
     const [step, setStep] = useState('opener');
-
-    const [formData, setFormData] = useState(initialFormState);
     
     const handleChange = (e) => {
         const {name, value, type, checked} = e.target;
