@@ -1,0 +1,56 @@
+.page {
+	
+	height: 100%;
+	padding: 0 20px;
+	overflow: auto;
+
+	min-height: 100vh;
+
+	background-color: var(--color-bg);
+	color: var(--color-fg);
+	
+	&.centered {
+		
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		
+	}
+	
+	main {
+		
+		flex: 1;
+		
+		width: 100%;
+		max-width: var(--page-width);
+		padding: 10px 10px;
+		
+	}
+
+	
+	&.full-width main {
+		
+		max-width: none;
+		
+	}
+	
+	::selection {
+		
+		background: var(--color-fg);
+		color: var(--color-bg);
+		
+	}
+	
+	a {
+		
+		color: #AFAFFA;
+		
+		&:visited {
+			
+			color: #7A4AFF;
+			
+		}
+		
+	}
+	
+}
