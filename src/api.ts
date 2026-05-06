@@ -36,7 +36,7 @@ export const getEvents = async (): Promise<FiMEvent[]> => {
     const headers: Headers = new Headers();
     headers.set('X-TBA-Auth-Key', 'ghZtTC8mvcH3PMxxg9kiofSKNSKbqKg47IcZTS0f7luvzX3qUoAn1Y2JLrh4Rc5z');
 
-    const request = new Request('https://www.thebluealliance.com/api/v3/district/2026fim/events', {
+    const request = new Request(TBA_API_URL + 'district/2026fim/events', {
       method: 'GET',
       headers,
     });
