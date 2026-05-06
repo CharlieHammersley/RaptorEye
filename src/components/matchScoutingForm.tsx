@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import './matchScoutingForm.scss'; 
-import { getEvents } from '../api.ts';
-import type { FiMEvent } from '../api.ts';
+import { getEvents, type FiMEvent } from '../api.ts';
 
 
 const initialFormState = {
@@ -73,18 +72,17 @@ export default function matchScoutingForm() {
     // prelim info
     const [scouterName, setScouterName] = useState('');
     const [events, setEvents] = useState<FiMEvent[]>([]);
-    const [selectedEvent, setSelectedEvent] = useState<FiMEvent | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<FiMEvent | undefined>(undefined);
 
     useEffect(() => {
         getEvents().then(setEvents);
     }, []);
 
-
     const [step, setStep] = useState('opener');
 
     const [formData, setFormData] = useState(initialFormState);
     
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value, type, checked} = e.target;
         setFormData(prev => ({
             ...prev,
@@ -102,7 +100,7 @@ export default function matchScoutingForm() {
                 <FormField label="Event " name="event" type="select"
                     options={events.map(event => event.name)}
                     value={selectedEvent?.name || ''}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         const selected = events.find(ev => ev.name === e.target.value);
                         setSelectedEvent(selected); // Store all the event data
                     }}/>
@@ -116,7 +114,7 @@ export default function matchScoutingForm() {
         return (
             <div className="form">
                 <h1>Match Scouting</h1>
-                    <h3>Scouting Event: {selectedEvent.key}</h3>
+                    <h3>Scouting Event: {selectedEvent?.key || ''}</h3>
                         <p>{scouterName}</p>
                         <p>Matches Scouted: {scoutedData.length}</p>
                     <hr />
@@ -196,7 +194,7 @@ export default function matchScoutingForm() {
                             <QRCodeCanvas 
                                 value={JSON.stringify({
                                     n: scouterName,
-                                    e: selectedEvent.key,
+                                    e: selectedEvent?.key,
                                     m: match.matchNumber,
                                     p: match.position,
                                     t: match.team,
