@@ -1,5 +1,5 @@
 import "./page.scss";
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "../page-flow/header";
 import { Footer } from "../page-flow/footer";
 
@@ -11,6 +11,7 @@ export type Props = Readonly<{
 	fullWidthContent: boolean,
 	children?: React.ReactNode,
 }>;
+const [theme, setTheme] = useState('light');
 
 export type State = Readonly<{}>;
 
@@ -30,7 +31,7 @@ export class Page extends React.Component<Props, State> {
 		
 		if (this.props.centered) classes.push("centered");
 		if (this.props.fullWidthContent) classes.push("full-width");
-		
+
 		return (
 			<div className={classes.join(" ")}>
 				{this.props.preHeader ?? null}

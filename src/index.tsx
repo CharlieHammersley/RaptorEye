@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.scss';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
