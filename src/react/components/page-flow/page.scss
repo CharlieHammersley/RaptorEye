@@ -6,8 +6,7 @@
 
 	min-height: 100vh;
 
-	background-color: var(--color-bg);
-	color: var(--color-fg);
+	background-color: rgb(100, 100, 100);
 	
 	&.centered {
 		
@@ -21,7 +20,7 @@
 		
 		flex: 1;
 		
-		width: 100%;
+		max-width: 100%;
 		//max-width: var(--page-width);
 		//padding: 10px 10px;
 		
@@ -45,11 +44,11 @@
 		
 		color: #AFAFFA;
 		
-		&:visited {
+		/*&:visited {
 			
 			color: #7A4AFF;
 			
-		}
+		}*/
 		
 	}
 	

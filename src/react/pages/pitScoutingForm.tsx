@@ -7,7 +7,7 @@ import FormField from '../components/formField.tsx';
 import { initialFormState, type MatchFormData } from '../components/matchFormState';
 import { Page } from '../components/page-flow/page.tsx';
     
-export default function matchScoutingForm() {
+export default function pitScoutingForm() {
 
     const [formData, setFormData] = useState<MatchFormData>(initialFormState);
     // saving data
